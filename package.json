@@ -1,0 +1,19 @@
+{
+  "name": "New_E-Comers_Web_Site",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "client": "pnpm --filter client dev",
+    "admin": "pnpm --filter admin dev",
+    "server": "pnpm --filter server dev",
+    "dev": "concurrently \"pnpm --filter client dev\" \"pnpm --filter admin dev\" \"pnpm --filter server dev\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.30.3",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

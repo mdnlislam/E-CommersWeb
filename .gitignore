@@ -1,0 +1,13 @@
+# dependencies
+node_modules
+
+# next build
+.next
+out
+
+# env
+.env
+
+# logs
+npm-debug.log*
+pnpm-debug.log*
