@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const userSchema = new mongoose.Schema({
-  username: {
+  name: {
     type: String,
     required: true,
     unique: true,
@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema({
   },
   image: {
     type: String,
+    default: "",
   },
 });
 module.exports = mongoose.model("User", userSchema);
