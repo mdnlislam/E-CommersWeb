@@ -1,7 +1,9 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
-const generateToken = require("../utils/generateToken");
+const crypto = require("crypto");
 
+const generateToken = require("../utils/generateToken");
+const sendEmail = require("../utils/sendEmail");
 // @desc    Register a new user
 
 const registerUser = async (req, res) => {
@@ -19,16 +21,58 @@ const registerUser = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    const verificationToken = crypto.randomBytes(32).toString("hex");
     const newUser = await User.create({
       name,
       email,
       password: hashedPassword,
+      verificationToken,
     });
 
+    // Send verification email
+
+    const verifyUrl = `http://localhost:4000/verify-email?token=${verificationToken}`;
+
+    await sendEmail(
+      email,
+      "Email Verification",
+      `<p>Please click the following link to verify your email: <a href="${verifyUrl}">Verify Email</a></p>`,
+    );
+
     res.status(201).json({
-      _id: newUser._id,
-      name: newUser.name,
-      email: newUser.email,
+      message:
+        "User registered successfully. Please check your email to verify your account.",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+//============
+
+// verify email
+
+//=============
+
+const verifyEmail = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const user = await User.findOne({ verificationToken: token });
+
+    if (!user) {
+      return res.status(400).json({
+        message: "Invalid verification token",
+      });
+    }
+
+    user.isVerified = true;
+    user.verificationToken = undefined;
+    await user.save();
+
+    res.status(200).json({
+      message: "Email verified successfully",
     });
   } catch (error) {
     res.status(500).json({
@@ -44,18 +88,31 @@ const loginUser = async (req, res) => {
 
     const user = await User.findOne({ email });
 
-    if (user && (await bcrypt.compare(password, user.password))) {
-      res.json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        token: generateToken(user._id),
-      });
-    } else {
-      res.status(401).json({
+    if (!user) {
+      return res.status(401).json({
         message: "Invalid email or password",
       });
     }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(401).json({
+        message: "Invalid email or password",
+      });
+    }
+
+    if (!user.isVerified) {
+      return res.status(401).json({
+        message: "Please verify your email first",
+      });
+    }
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      token: generateToken(user._id),
+    });
   } catch (error) {
     res.status(500).json({
       message: error.message,
@@ -66,4 +123,5 @@ const loginUser = async (req, res) => {
 module.exports = {
   registerUser,
   loginUser,
+  verifyEmail,
 };

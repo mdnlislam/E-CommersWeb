@@ -30,6 +30,7 @@ export default function RegisterPage() {
             <input
               type="text"
               placeholder="Enter your username"
+              autoComplete="none"
               {...register("username")}
               className="w-full border text-black border-gray-300 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -43,6 +44,7 @@ export default function RegisterPage() {
             <input
               type="email"
               placeholder="Enter your email"
+              autoComplete="off"
               {...register("email")}
               className="w-full border text-black border-gray-300 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
             />
