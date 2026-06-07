@@ -8,7 +8,7 @@ const sendEmail = require("../utils/sendEmail");
 
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { username, email, password } = req.body;
 
     const userExists = await User.findOne({ email });
     if (userExists) {
@@ -23,7 +23,7 @@ const registerUser = async (req, res) => {
 
     const verificationToken = crypto.randomBytes(32).toString("hex");
     const newUser = await User.create({
-      name,
+      username,
       email,
       password: hashedPassword,
       verificationToken,
@@ -109,7 +109,7 @@ const loginUser = async (req, res) => {
     }
     res.json({
       _id: user._id,
-      name: user.name,
+      username: user.username,
       email: user.email,
       token: generateToken(user._id),
     });

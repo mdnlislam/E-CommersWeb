@@ -2,11 +2,17 @@
 
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-
+import API from "../../services/axiosInstance";
 export default function RegisterPage() {
   const { register, handleSubmit, reset } = useForm();
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
+    try {
+      const response = await API.post("/auth/register", data);
+      console.log(response.data, "response from server");
+    } catch (error) {
+      console.error(error);
+    }
     console.log(data);
     reset();
   };
