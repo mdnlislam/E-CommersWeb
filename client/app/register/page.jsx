@@ -3,13 +3,19 @@
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import API from "../../services/axiosInstance";
+import { useState } from "react";
 export default function RegisterPage() {
+  const [successMessage, setSuccessMessage] = useState("");
   const { register, handleSubmit, reset } = useForm();
 
   const onSubmit = async (data) => {
     try {
       const response = await API.post("/auth/register", data);
-      console.log(response.data, "response from server");
+      setSuccessMessage(response.data.message);
+
+      setTimeout(() => {
+        setSuccessMessage("");
+      }, 5000);
     } catch (error) {
       console.error(
         error.response ? error.response.data.message : error.message,
@@ -27,6 +33,12 @@ export default function RegisterPage() {
           <h1 className="text-3xl font-bold text-gray-800">Create Account</h1>
           <p className="text-gray-500 mt-2">Register to start shopping</p>
         </div>
+
+        {successMessage && (
+          <div className="bg-green-100 text-green-700 p-4 rounded mb-6">
+            {successMessage}
+          </div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">

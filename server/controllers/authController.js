@@ -31,7 +31,7 @@ const registerUser = async (req, res) => {
 
     // Send verification email
 
-    const verifyUrl = `http://localhost:4000/api/auth/verify-email?token=${verificationToken}`;
+    const verifyUrl = `http://localhost:3000/verify-email?token=${verificationToken}`;
 
     await sendEmail(
       email,
