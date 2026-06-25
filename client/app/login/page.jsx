@@ -2,16 +2,30 @@
 
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-
+import { useRouter } from "next/navigation";
+import API from "@/services/axiosInstance";
 export default function LoginPage() {
   const { register, handleSubmit, reset } = useForm();
+  const router = useRouter();
 
   const onSubmit = (data) => {
-    console.log(data);
+    try {
+      API.post("/auth/login", data)
+        .then((response) => {
+          console.log(response.data);
+          localStorage.setItem("token", response.data.token);
+        })
+        .catch((error) => {
+          console.error("Login failed:", error);
+        });
+
+      reset();
+      router.push("/products");
+    } catch (error) {
+      console.error("An error occurred during login:", error);
+    }
 
     // API Call Here
-
-    reset();
   };
 
   return (
