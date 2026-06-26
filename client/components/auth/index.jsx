@@ -1,5 +1,6 @@
 "use client";
 
+import axios from "axios";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
@@ -14,14 +15,45 @@ export default function Auth({ children }) {
   useEffect(() => {
     const checkAuth = async () => {
       const token = localStorage.getItem("token");
-      console.log("Token:", token);
-      if (publicPaths.includes(pathname) && token) {
-        router.push("/products");
+
+      // token checking logic
+      if (!token) {
+        if (privatePaths.includes(pathname)) {
+          router.push("/login");
+          return;
+        }
+        setLoading(false);
+        return;
       }
-      if (privatePaths.includes(pathname) && !token) {
+
+      // backend verification logic
+
+      try {
+        const response = await axios.get(
+          "http://localhost:4000/api/auth/profile",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        if (!response.data.ok) {
+          localStorage.removeItem("token");
+          router.push("/login");
+          return;
+        }
+
+        if (publicPaths.includes(pathname)) {
+          router.push("/products");
+          return;
+        }
+        setLoading(false);
+      } catch (err) {
+        console.log(err);
+        localStorage.removeItem("token");
         router.push("/login");
       }
-      setLoading(false);
     };
     checkAuth();
   }, [pathname, router]);

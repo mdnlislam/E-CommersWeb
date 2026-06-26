@@ -11,12 +11,11 @@ const protect = require("../middleware/authMiddleware");
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/verify-email", verifyEmail);
+
 router.get("/profile", verifyToken, (req, res) => {
-  res.json({ message: "This is a protected route", user: req.user });
+  res.status(200).json({
+    success: true,
+    user: req.user,
+  });
 });
-
-router.get("/profile", protect, (req, res) => {
-  res.json({ message: "This is a protected route", user: req.user });
-});
-
 module.exports = router;
