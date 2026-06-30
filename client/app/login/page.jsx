@@ -8,23 +8,19 @@ export default function LoginPage() {
   const { register, handleSubmit, reset } = useForm();
   const router = useRouter();
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     try {
-      API.post("/auth/login", data)
-        .then((response) => {
-          console.log(response.data);
-          localStorage.setItem("token", response.data.token);
-        })
-        .catch((error) => {
-          console.error("Login failed:", error);
-        });
+      const response = await API.post("/auth/login", data);
+
+      const { token } = response.data;
+      localStorage.setItem("token", token);
 
       reset();
+
       router.push("/products");
     } catch (error) {
-      console.error("An error occurred during login:", error);
+      console.error("Login failed:", error?.response?.data || error.message);
     }
-
     // API Call Here
   };
 
