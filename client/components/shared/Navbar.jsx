@@ -4,8 +4,8 @@ import Link from "next/link";
 import { navLinks } from "@/data/navLinks";
 import { Heart, ShoppingCart, User } from "lucide-react";
 // import { useState } from "react";
-import { usePathname } from "next/navigation";
-
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 export default function Navbar() {
   // const [active, setActive] = useState(false);
   const user = null; // পরে JWT/Auth Context থেকে আসবে
@@ -61,12 +61,9 @@ export default function Navbar() {
               </Link>
             ) : (
               <div className="flex items-center gap-2">
-                <Link
-                  href="/login"
-                  className={`border text-black border-gray-300 px-4 py-2 rounded-lg  ${pathname === "/login" ? "bg-blue-700 text-white" : ""}`}
-                >
-                  Login
-                </Link>
+                <h3>
+                  <Logout />
+                </h3>
 
                 <Link
                   href="/register"
@@ -80,5 +77,34 @@ export default function Navbar() {
         </div>
       </div>
     </nav>
+  );
+}
+
+export function Logout() {
+  const pathname = usePathname();
+  const router = useRouter();
+  const [token, setToken] = useState(null);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setToken(token);
+  }, [pathname]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setToken(null);
+    router.push("/login");
+  };
+  return (
+    <div
+      onClick={handleLogout}
+      className={`border px-4 py-2 rounded-lg cursor-pointer transition
+    ${
+      token
+        ? "bg-red-300 text-white border-red-200 hover:bg-red-300"
+        : "bg-blue-300 text-black/60 border-blue-200 hover:bg-blue-300"
+    }`}
+    >
+      {token ? "LOGOUT" : "LOGIN"}
+    </div>
   );
 }
