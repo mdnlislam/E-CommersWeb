@@ -7,7 +7,7 @@ import { useState } from "react";
 export default function RegisterPage() {
   const [successMessage, setSuccessMessage] = useState("");
   const { register, handleSubmit, reset } = useForm();
-
+  const [errorMessage, setErrorMessage] = useState("");
   const onSubmit = async (data) => {
     try {
       const response = await API.post("/auth/register", data);
@@ -17,9 +17,12 @@ export default function RegisterPage() {
         setSuccessMessage("");
       }, 5000);
     } catch (error) {
-      console.error(
+      setErrorMessage(
         error.response ? error.response.data.message : error.message,
       );
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 5000);
     }
     console.log(data);
     reset();
@@ -37,6 +40,12 @@ export default function RegisterPage() {
         {successMessage && (
           <div className="bg-green-100 text-green-700 p-4 rounded mb-6">
             {successMessage}
+          </div>
+        )}
+
+        {errorMessage && (
+          <div className="bg-red-100 text-red-700 p-4 rounded mb-6">
+            {errorMessage}
           </div>
         )}
 
