@@ -112,6 +112,7 @@ const loginUser = async (req, res) => {
       username: user.username,
       email: user.email,
       token: generateToken(user._id),
+      image: user.image,
     });
   } catch (error) {
     res.status(500).json({

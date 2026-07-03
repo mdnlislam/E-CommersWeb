@@ -11,9 +11,11 @@ export default function LoginPage() {
   const onSubmit = async (data) => {
     try {
       const response = await API.post("/auth/login", data);
-
+      console.log("Login successful:", response);
       const { token } = response.data;
       localStorage.setItem("token", token);
+
+      localStorage.setItem("user", JSON.stringify(response.data));
 
       reset();
 
