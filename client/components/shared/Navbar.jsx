@@ -2,14 +2,40 @@
 
 import Link from "next/link";
 import { navLinks } from "@/data/navLinks";
-import { Heart, ShoppingCart, User } from "lucide-react";
-// import { useState } from "react";
+import { Heart, ShoppingCart } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+
 export default function Navbar() {
-  // const [active, setActive] = useState(false);
-  const user = null; // পরে JWT/Auth Context থেকে আসবে
   const pathname = usePathname();
+  const router = useRouter();
+
+  const [token, setToken] = useState(null);
+  const [userImage, setUserImage] = useState(null);
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+
+    setToken(storedToken);
+
+    if (user) {
+      const parsedUser = JSON.parse(user);
+      setUserImage(parsedUser.image);
+    } else {
+      setUserImage(null);
+    }
+  }, [pathname]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    setToken(null);
+    setUserImage(null);
+
+    router.push("/login");
+  };
 
   return (
     <nav className="sticky top-0 z-50 bg-white shadow-md">
@@ -50,61 +76,55 @@ export default function Navbar() {
               </span>
             </button>
 
-            {/* Auth */}
-            {user ? (
-              <Link
-                href="/profile"
-                className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg"
-              >
-                <User size={18} />
-                Profile
-              </Link>
-            ) : (
-              <div className="flex items-center gap-2">
-                <h3>
-                  <Logout />
-                </h3>
+            {token ? (
+              <>
+                {/* Profile */}
+                <Link href="/profile" className="flex items-center gap-2">
+                  <img
+                    src={userImage}
+                    alt="Profile"
+                    className="w-10 h-10 rounded-full object-cover border"
+                  />
+                </Link>
 
+                {/* Logout */}
+                <button
+                  onClick={handleLogout}
+                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition cursor-pointer"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                {/* Login */}
+                <Link
+                  href="/login"
+                  className={`border border-blue-500 px-4 py-2 rounded-lg transition ${
+                    pathname === "/login"
+                      ? "bg-blue-600 text-white"
+                      : "text-blue-600 hover:bg-blue-50"
+                  }`}
+                >
+                  Login
+                </Link>
+
+                {/* Register */}
                 <Link
                   href="/register"
-                  className={` border border-gray-300 text-black  px-4 py-2 rounded-lg ${pathname === "/register" ? "bg-blue-700 text-white" : ""}`}
+                  className={`border border-gray-300 px-4 py-2 rounded-lg transition ${
+                    pathname === "/register"
+                      ? "bg-blue-600 text-white"
+                      : "text-black hover:bg-gray-100"
+                  }`}
                 >
                   Register
                 </Link>
-              </div>
+              </>
             )}
           </div>
         </div>
       </div>
     </nav>
-  );
-}
-
-export function Logout() {
-  const pathname = usePathname();
-  const router = useRouter();
-  const [token, setToken] = useState(null);
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    setToken(token);
-  }, [pathname]);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setToken(null);
-    router.push("/login");
-  };
-  return (
-    <div
-      onClick={handleLogout}
-      className={`border px-4 py-2 rounded-lg cursor-pointer transition
-    ${
-      token
-        ? "bg-red-300 text-white border-red-200 hover:bg-red-300"
-        : "bg-blue-300 text-black/60 border-blue-200 hover:bg-blue-300"
-    }`}
-    >
-      {token ? "LOGOUT" : "LOGIN"}
-    </div>
   );
 }
