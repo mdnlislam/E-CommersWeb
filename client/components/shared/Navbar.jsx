@@ -5,7 +5,7 @@ import { navLinks } from "@/data/navLinks";
 import { Heart, ShoppingCart } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
+import { User } from "lucide-react";
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
@@ -79,18 +79,23 @@ export default function Navbar() {
             {token ? (
               <>
                 {/* Profile */}
-                <Link href="/profile" className="flex items-center gap-2">
-                  <img
-                    src={userImage}
-                    alt="Profile"
-                    className="w-10 h-10 rounded-full object-cover border"
-                  />
+                <Link href="/profile">
+                  <div className="w-10 h-10 rounded-full border bg-gray-100 hover:bg-gray-200 transition flex items-center justify-center overflow-hidden">
+                    {userImage ? (
+                      <img
+                        src={userImage}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <User size={22} className="text-gray-500" />
+                    )}
+                  </div>
                 </Link>
-
                 {/* Logout */}
                 <button
                   onClick={handleLogout}
-                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition cursor-pointer"
+                  className="bg-red-400 hover:bg-red-300 text-white px-4 py-2 rounded-lg transition cursor-pointer"
                 >
                   Logout
                 </button>
