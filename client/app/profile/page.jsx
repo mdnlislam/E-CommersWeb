@@ -15,9 +15,8 @@ export default function ProfilePage() {
 
   const fetchProfile = async () => {
     try {
-      const token = localStorage.getItem("token");
-      //   const res = await API.get("/users/me");
-      setUser(token);
+      const userData = JSON.parse(localStorage.getItem("user"));
+      setUser(userData);
     } catch (error) {
       console.log(error);
     }
