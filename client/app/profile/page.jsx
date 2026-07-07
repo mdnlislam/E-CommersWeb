@@ -5,7 +5,7 @@ import API from "@/services/axiosInstance";
 import { Camera } from "lucide-react";
 
 export default function ProfilePage() {
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState(null);
   const [profilePic, setProfilePic] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -13,12 +13,12 @@ export default function ProfilePage() {
     fetchProfile();
   }, []);
 
-  const fetchProfile = async () => {
+  const fetchProfile = () => {
     try {
       const userData = JSON.parse(localStorage.getItem("user"));
-      setUser(userData);
+      if (userData) setUser(userData);
     } catch (error) {
-      console.log(error);
+      console.log("Error loading local storage:", error);
     }
   };
 
@@ -26,34 +26,34 @@ export default function ProfilePage() {
     if (!profilePic) return;
 
     const formData = new FormData();
+
     formData.append("profilePic", profilePic);
 
     try {
       setLoading(true);
 
-      const res = await API.put("/users/profile-picture", formData);
+      const token = localStorage.getItem("token");
 
-      // backend থেকে updated image url আসবে
-      setUser((prev) => ({
-        ...prev,
-        image: res.data.image,
-      }));
+      const res = await API.put("/auth/profile-picture", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-      // Navbar update করার জন্য localStorage update
-      const localUser = JSON.parse(localStorage.getItem("user"));
+      const updatedUser = res.data.user;
 
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          ...localUser,
-          image: res.data.image,
-        }),
-      );
+      if (updatedUser) {
+        setUser(updatedUser);
 
-      alert("Profile picture updated.");
-      setProfilePic(null);
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+
+        alert("Profile picture updated successfully.");
+        setProfilePic(null);
+      }
     } catch (err) {
-      console.log(err);
+      console.log("Upload error:", err);
+      alert("Failed to upload image.");
     } finally {
       setLoading(false);
     }
@@ -76,19 +76,16 @@ export default function ProfilePage() {
 
             <label className="absolute bottom-2 right-2 bg-blue-600 text-white p-2 rounded-full cursor-pointer hover:bg-blue-700">
               <Camera size={18} />
-
               <input
                 type="file"
                 hidden
                 accept="image/*"
                 onChange={(e) => setProfilePic(e.target.files[0])}
-                className="border-2 border-blue-500 rounded-full p-1 cursor-pointer"
               />
             </label>
           </div>
 
           <h2 className="text-2xl font-bold mt-5">{user.username}</h2>
-
           <p className="text-gray-500">{user.email}</p>
 
           {profilePic && (
