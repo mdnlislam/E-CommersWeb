@@ -5,23 +5,23 @@ import { navLinks } from "@/data/navLinks";
 import { Heart, ShoppingCart } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { User } from "lucide-react";
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
 
   const [token, setToken] = useState(null);
   const [userImage, setUserImage] = useState(null);
-
+  const [user, setUser] = useState(null);
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
-    const user = localStorage.getItem("user");
+    const userinfrom = localStorage.getItem("user");
 
     setToken(storedToken);
 
-    if (user) {
-      const parsedUser = JSON.parse(user);
+    if (userinfrom) {
+      const parsedUser = JSON.parse(userinfrom);
       setUserImage(parsedUser.image);
+      setUser(parsedUser);
     } else {
       setUserImage(null);
     }
@@ -80,7 +80,7 @@ export default function Navbar() {
               <>
                 {/* Profile */}
                 <Link href="/profile">
-                  <div className="w-10 h-10 rounded-full border bg-gray-100 hover:bg-gray-200 transition flex items-center justify-center overflow-hidden">
+                  <div className="w-10 h-10 rounded-full border bg-red-200 hover:bg-gray-200 transition flex items-center justify-center overflow-hidden">
                     {userImage ? (
                       <img
                         src={userImage}
@@ -88,7 +88,11 @@ export default function Navbar() {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <User size={22} className="text-gray-500" />
+                      <p className="text-gray-500">
+                        {user?.username?.charAt(0).toUpperCase()}
+                      </p>
+
+                      // <User size={22} className="text-gray-500" />
                     )}
                   </div>
                 </Link>
