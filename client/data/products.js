@@ -1,0 +1,58 @@
+const products = [
+  {
+    id: 1,
+    title: "Apple Watch Series 9",
+    price: 499,
+    oldPrice: 599,
+    image: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=600",
+    rating: 4.8,
+    featured: true,
+  },
+  {
+    id: 2,
+    title: "Wireless Headphone",
+    price: 99,
+    oldPrice: 129,
+    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600",
+    rating: 4.6,
+    featured: true,
+  },
+  {
+    id: 3,
+    title: "Running Shoes",
+    price: 149,
+    oldPrice: 189,
+    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600",
+    rating: 4.7,
+    featured: true,
+  },
+  {
+    id: 4,
+    title: "Modern Chair",
+    price: 249,
+    oldPrice: 299,
+    image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=600",
+    rating: 4.5,
+    featured: true,
+  },
+  {
+    id: 5,
+    title: "Gaming Mouse",
+    price: 59,
+    oldPrice: 79,
+    image: "https://images.unsplash.com/photo-1527814050087-3793815479db?w=600",
+    rating: 4.8,
+    featured: true,
+  },
+  {
+    id: 6,
+    title: "Smart Phone",
+    price: 799,
+    oldPrice: 899,
+    image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600",
+    rating: 4.9,
+    featured: true,
+  },
+];
+
+export default products;
