@@ -90,10 +90,10 @@ export default function ProductsPage() {
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-orange-500"
+          className="border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-orange-500 "
         >
-          {categories.map((item) => (
-            <option key={item}>{item}</option>
+          {categories.map((item, index) => (
+            <option key={index}>{item}</option>
           ))}
         </select>
 
@@ -101,13 +101,23 @@ export default function ProductsPage() {
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
-          className="border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-orange-500"
+          className="border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-orange-500 "
         >
-          <option value="default">Default</option>
-          <option value="low">Price : Low → High</option>
-          <option value="high">Price : High → Low</option>
-          <option value="rating">Top Rated</option>
-          <option value="name">Name (A-Z)</option>
+          <option className="text-black" value="default">
+            Default
+          </option>
+          <option className="text-black" value="low">
+            Price : Low → High
+          </option>
+          <option className="text-black" value="high">
+            Price : High → Low
+          </option>
+          <option className="text-black" value="rating">
+            Top Rated
+          </option>
+          <option className="text-black" value="name">
+            Name (A-Z)
+          </option>
         </select>
       </div>
 
